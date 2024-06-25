@@ -1,15 +1,11 @@
 package artcreator.creator.port;
 
-import artcreator.creator.model.Profile;
-import artcreator.creator.model.Template;
+import artcreator.domain.port.Profile;
 
 public interface Creator {
-	
-	void sysop(String str);
 
-	Template setImage(String path);
+	void setImage(String path);
 
-	Template setProfile(Profile profile);
-
+	void updateProfile(Profile profile);
 }
 

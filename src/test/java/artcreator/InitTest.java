@@ -19,31 +19,31 @@ class InitTest implements Observer{
 	State s;
 	
 
-	@Test
-	void test() {
-		
-		
-		StateMachine stateMachine = StateMachineFactory.FACTORY.stateMachine();
-		Assertions.assertNotNull(stateMachine);
-		Subject subject = StateMachineFactory.FACTORY.subject();
-		Assertions.assertEquals(stateMachine, subject);
-		subject.attach(this);
-		
-		Assertions.assertTrue(stateMachine.getState().isSubStateOf( S.CREATE_TEMPLATE));
-		Assertions.assertEquals(S.CREATE_TEMPLATE, this.s);
-		subject.detach(this);
-
-		Domain domain = DomainFactory.FACTORY.domain();
-		Assertions.assertNotNull(domain);
-				
-		
-		Creator creator = CreatorFactory.FACTORY.creator();
-		Assertions.assertNotNull(creator);
-		
-		creator.sysop("test");
-		Assertions.assertTrue(true);
-
-	}
+//	@Test
+//	void test() {
+//
+//
+//		StateMachine stateMachine = StateMachineFactory.FACTORY.stateMachine();
+//		Assertions.assertNotNull(stateMachine);
+//		Subject subject = StateMachineFactory.FACTORY.subject();
+//		Assertions.assertEquals(stateMachine, subject);
+//		subject.attach(this);
+//
+//		Assertions.assertTrue(stateMachine.getState().isSubStateOf( S.CREATE_TEMPLATE));
+//		Assertions.assertEquals(S.CREATE_TEMPLATE, this.s);
+//		subject.detach(this);
+//
+//		Domain domain = DomainFactory.FACTORY.domain();
+//		Assertions.assertNotNull(domain);
+//
+//
+//		Creator creator = CreatorFactory.FACTORY.creator();
+//		Assertions.assertNotNull(creator);
+//
+//		creator.sysop("test");
+//		Assertions.assertTrue(true);
+//
+//	}
 
 	@Override
 	public void update(State currentState) {

@@ -11,15 +11,14 @@ public interface State {
 	boolean isSuperStateOf(State state);
 
 	public enum S implements State {
-		NO_PICTURE_LOADED,
-		LOADING_PICTURE,
-		CREATE_TEMPLATE,
-		CAN_CREATE_TEMPLATE,
-		TEMPLATE_CREATED;
+		NO_IMAGE_LOADED,
+		IMAGE_LOADED,
+		TEMPLATE_CREATED,
+		PROFILE_UPDATE;
 
 		private List<State> subStates;
 
-		public static final S INITIAL_STATE = NO_PICTURE_LOADED;
+		public static final S INITIAL_STATE = NO_IMAGE_LOADED;
 
 		private S(State... subS) {
 			this.subStates = new ArrayList<>(Arrays.asList(subS));

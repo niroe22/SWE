@@ -1,4 +1,4 @@
-package artcreator.creator.model;
+package artcreator.domain.port;
 
 
 public class Template{
