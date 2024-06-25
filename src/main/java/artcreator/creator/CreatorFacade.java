@@ -1,6 +1,8 @@
 package artcreator.creator;
 
 import artcreator.creator.impl.CreatorImpl;
+import artcreator.creator.model.Profile;
+import artcreator.creator.model.Template;
 import artcreator.creator.port.Creator;
 import artcreator.domain.DomainFactory;
 import artcreator.statemachine.StateMachineFactory;
@@ -26,8 +28,16 @@ public class CreatorFacade implements CreatorFactory, Creator {
 		if (this.stateMachine.getState().isSubStateOf( S.CREATE_TEMPLATE /* choose right state*/ ))
 			this.creator.sysop(str);
 	}
-	
-	
+
+	@Override
+	public synchronized Template setImage(String path) {
+		return creator.setImage(path);
+	}
+
+	@Override
+	public synchronized Template setProfile(Profile profile){
+		return creator.setProfile(profile);
+	}
 	
 
 }
