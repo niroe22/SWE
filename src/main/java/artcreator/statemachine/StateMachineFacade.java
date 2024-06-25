@@ -25,8 +25,6 @@ public class StateMachineFacade implements StateMachineFactory, StateMachine, Su
 		return this;
 	}
 	
-	
-	
 	@Override
 	public synchronized void attach(Observer obs) {
 		this.stateMachine.attach(obs);
