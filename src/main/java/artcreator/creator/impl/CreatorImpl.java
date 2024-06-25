@@ -3,6 +3,7 @@ package artcreator.creator.impl;
 import artcreator.creator.model.Profile;
 import artcreator.creator.model.Template;
 import artcreator.domain.port.Domain;
+import artcreator.statemachine.port.State;
 import artcreator.statemachine.port.StateMachine;
 
 public class CreatorImpl {
@@ -16,7 +17,7 @@ public class CreatorImpl {
 		
 	}
 
-	public Template setImage(String path) {
+	public State setImage(String path) {
 		return null;
 	}
 

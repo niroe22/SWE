@@ -6,6 +6,7 @@ import artcreator.creator.model.Template;
 import artcreator.creator.port.Creator;
 import artcreator.domain.DomainFactory;
 import artcreator.statemachine.StateMachineFactory;
+import artcreator.statemachine.port.State;
 import artcreator.statemachine.port.StateMachine;
 import artcreator.statemachine.port.State.S;
 
@@ -30,8 +31,13 @@ public class CreatorFacade implements CreatorFactory, Creator {
 	}
 
 	@Override
-	public synchronized Template setImage(String path) {
-		return creator.setImage(path);
+	public Template setImage(String path) {
+		if (this.stateMachine.getState().isSubStateOf(S.CREATE_TEMPLATE)||
+		this.stateMachine.getState().isSubStateOf(S.NO_PICTURE_LOADED)||
+		this.stateMachine.getState().isSubStateOf(S.CAN_CREATE_TEMPLATE)) {
+			State s = creator.setImage(path);
+		}
+		return null;
 	}
 
 	@Override
