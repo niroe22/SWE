@@ -17,7 +17,7 @@ public class CreatorFacade implements CreatorFactory, Creator {
 	public Creator creator() {
 		if (this.creator == null) {
 			this.stateMachine = StateMachineFactory.FACTORY.stateMachine();
-			this.creator = new CreatorImpl(stateMachine, DomainFactory.FACTORY.domain());
+			this.creator = new CreatorImpl(DomainFactory.FACTORY.domain());
 		}
 		return this;
 	}

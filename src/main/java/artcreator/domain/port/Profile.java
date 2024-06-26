@@ -1,11 +1,11 @@
 package artcreator.domain.port;
 
 public class Profile {
-    private int width = 210;
-    private int height = 297;
-    private int granularity = 10;
-    private int rotation = 0;
-    private int markDiameter = 2;
+    private int rotation = 0; // in Grad
+    private int width = 210; // in mm
+    private int height = 297; // in mm
+    private int granularity = 10; // in mm
+    private int markDiameter = 2; // in mm
 
     public Profile(){}
 
