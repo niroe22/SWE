@@ -2,7 +2,6 @@ package artcreator.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.CompletableFuture;
 
 import javax.swing.JButton;
 
@@ -13,12 +12,12 @@ import artcreator.statemachine.port.Subject;
 
 public class Controller implements ActionListener, Observer {
 
-	  private CreatorFrame myView;
+	  private CreatorFrameOLD myView;
 	  private Creator myModel;
 	  private Subject subject;
 
 
-	  public Controller(CreatorFrame view, Subject subject, Creator model) {
+	  public Controller(CreatorFrameOLD view, Subject subject, Creator model) {
 	    this.myView = view;
 	    this.myModel = model;
 	    this.subject = subject;

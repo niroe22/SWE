@@ -1,45 +1,30 @@
 package artcreator.gui;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import artcreator.creator.CreatorFactory;
-import artcreator.creator.port.Creator;
-import artcreator.statemachine.StateMachineFactory;
-import artcreator.statemachine.port.Observer;
-import artcreator.statemachine.port.State;
-import artcreator.statemachine.port.Subject;
+public class CreatorFrame extends JFrame{
+    private JButton button1;
+    private JButton button2;
+    private JTextField textField1;
+    private JTextField textField2;
+    private JSlider slider1;
+    private JTextField textField3;
+    private JLabel settingsLabel;
+    private JPanel creatorJFrame;
 
-public class CreatorFrame extends JFrame implements Observer{
+    public CreatorFrame() {
+        button1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
-		
-	   private Creator creator = CreatorFactory.FACTORY.creator();
-	   private Subject subject = StateMachineFactory.FACTORY.subject();
-	   private Controller controller;
-	   
-	   private static final int WIDTH = 600;
-	   private static final int HEIGHT = 500;
-	   
-	   private JButton btn = new JButton("Hello SWE");
-	   private JPanel panel = new JPanel();
-	   
+            }
+        });
+    }
 
-	   public CreatorFrame()  {
-	     super("ArtCreator");
-	     this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-	     this.setSize(WIDTH, HEIGHT);
-	     this.setLocationRelativeTo(null);
-	     this.subject.attach(this);
-	     this.controller = new Controller(this, subject, creator);
-	     
-	     /* build view */
-	     this.btn.addActionListener(this.controller);
-	     this.panel.add(this.btn);
-         this.getContentPane().add(this.panel);
-	   }
+    public static void main(String[] args) {
+        CreatorFrame cf = new CreatorFrame();
+        cf.setContentPane();
+    }
 
-	   public void update(State newState) {/* modify view if necessary */}
-
-	}
