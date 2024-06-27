@@ -9,6 +9,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 
 public class CreatorFrame extends JFrame {
     private JButton ImageImportButton;
@@ -36,7 +37,19 @@ public class CreatorFrame extends JFrame {
         ImageImportButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("ImageImportButton");
+                JFileChooser fileChooser = new JFileChooser();
+
+                // Setze den Dateiauswahlmodus (Dateien oder Verzeichnisse)
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+                // Zeige den Dialog zum Öffnen einer Datei
+                int result = fileChooser.showOpenDialog(null);
+
+                // Überprüfe, ob der Benutzer eine Datei ausgewählt hat
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    JOptionPane.showMessageDialog(null, "Selected file: " + selectedFile.getAbsolutePath());
+                }
             }
         });
 
