@@ -18,7 +18,7 @@ public class DomainImpl {
 	public DomainImpl() {
 		image = null;
 		template = null;
-		profile = null;
+		profile = new Profile();
 	}
 
 	public State setImage(BufferedImage image){
@@ -41,7 +41,7 @@ public class DomainImpl {
 
 	public State updateProfile(Profile profile){
 		this.profile = profile;
-		return S.PROFILE_UPDATE;
+		return S.PROFILE_UPDATED;
 	}
 
 	public Profile updateProfile() {

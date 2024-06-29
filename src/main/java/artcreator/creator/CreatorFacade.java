@@ -8,6 +8,9 @@ import artcreator.statemachine.StateMachineFactory;
 import artcreator.statemachine.port.StateMachine;
 import artcreator.statemachine.port.State.S;
 
+import java.io.File;
+import java.time.LocalDateTime;
+
 public class CreatorFacade implements CreatorFactory, Creator {
 
 	private CreatorImpl creator;
@@ -23,20 +26,32 @@ public class CreatorFacade implements CreatorFactory, Creator {
 	}
 
 	@Override
-	public synchronized void setImage(String path) {
+	public synchronized void setImage(File imageFile) {
 		if (this.stateMachine.getState().isSubStateOf(S.NO_IMAGE_LOADED) ||
 				this.stateMachine.getState().isSubStateOf(S.IMAGE_LOADED) ||
 				this.stateMachine.getState().isSubStateOf(S.TEMPLATE_CREATED)) {
-			creator.setImage(path);
+			creator.setImage(imageFile);
+		} else {
+			System.err.println(LocalDateTime.now() + " - SetImage is not allowed");
 		}
 	}
 
 	@Override
 	public synchronized void updateProfile(Profile profile){
-		if (this.stateMachine.getState().isSubStateOf(S.TEMPLATE_CREATED)) {
+		if (this.stateMachine.getState().isSubStateOf(S.TEMPLATE_CREATED) ||
+				this.stateMachine.getState().isSubStateOf(S.PROFILE_UPDATED)) {
 			creator.updateProfile(profile);
+		} else {
+			System.err.println(LocalDateTime.now() + " - UpdateProfile is not allowed");
 		}
 	}
-	
+
+	public synchronized void createTemplate(){
+		if (this.stateMachine.getState().isSubStateOf(S.IMAGE_LOADED) ||
+				this.stateMachine.getState().isSubStateOf(S.TEMPLATE_CREATED) ||
+				this.stateMachine.getState().isSubStateOf(S.PROFILE_UPDATED)){
+			creator.createTemplate();
+		}
+	}
 
 }

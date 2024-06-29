@@ -14,7 +14,7 @@ public interface State {
 		NO_IMAGE_LOADED,
 		IMAGE_LOADED,
 		TEMPLATE_CREATED,
-		PROFILE_UPDATE;
+		PROFILE_UPDATED;
 
 		private List<State> subStates;
 

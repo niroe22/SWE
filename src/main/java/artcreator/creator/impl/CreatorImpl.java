@@ -3,9 +3,11 @@ package artcreator.creator.impl;
 import artcreator.domain.port.Profile;
 import artcreator.domain.port.Domain;
 import artcreator.domain.port.Template;
+import artcreator.statemachine.StateMachineFactory;
 import artcreator.statemachine.port.Observer;
 import artcreator.statemachine.port.State;
 import artcreator.statemachine.port.State.S;
+import artcreator.statemachine.port.Subject;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -16,122 +18,131 @@ import java.io.IOException;
 
 public class CreatorImpl implements Observer {
 
-	private final Domain domain;
+    private final Domain domain;
 
-	public CreatorImpl(Domain domain) {
-		this.domain = domain;
-	}
+    public CreatorImpl(Domain domain) {
+        this.domain = domain;
+        Subject subject = StateMachineFactory.FACTORY.subject();
+        subject.attach(this);
+    }
 
-	public void setImage(String imagePath) {
-		try{
-			BufferedImage image = ImageIO.read(new File(imagePath));
-			domain.setImage(image);
-		} catch (IOException e) {
-			System.err.println("Error while reading image " + imagePath);
-		}
-	}
+    public void setImage(File imageFile) {
+        try {
+            BufferedImage image = ImageIO.read(imageFile);
+            domain.setImage(image);
+        } catch (IOException e) {
+            System.err.println("Error while reading image " + imageFile.getName());
+        }
+    }
 
-	public void updateProfile(Profile profile){
-		domain.setProfile(profile);
-	}
+    public void updateProfile(Profile profile) {
+        domain.setProfile(profile);
+    }
 
-	private void createTemplate(Profile profile, BufferedImage image){
-		BufferedImage transformedImage = rotateImage(image, profile.getRotation());
-		transformedImage = resizeImage(transformedImage, mmToPixels(profile.getWidth()), mmToPixels(profile.getHeight()));
+    public void createTemplate() {
+        Profile profile = domain.getProfile();
+        BufferedImage image=domain.getImage();
+//        if(profile.getRotation() == 90 || profile.getRotation() == 270) {
+//            image = scaleToFitAspectRatio(domain.getImage(), profile.getLength(), profile.getWidth());
+//        } else {
+//            image = scaleToFitAspectRatio(domain.getImage(), profile.getWidth(), profile.getLength());
+//        }
 
-		int gridSize = mmToPixels(profile.getGranularity());
-		int gridWidth = transformedImage.getWidth()/gridSize;
-		int gridHeight = transformedImage.getWidth()/gridSize;
+        int gridSize = (int) ((double) Math.min(image.getWidth(), image.getHeight()) * (double) profile.getGranularity() / (double) Math.min(profile.getWidth(), profile.getLength()));
+        int gridWidth = image.getWidth() / gridSize;
+        int gridHeight = image.getHeight() / gridSize;
 
-		Color[][] grid = new Color[gridWidth][gridHeight];
+        Color[][] grid = new Color[gridWidth][gridHeight];
 
-		for(int x = 0; x < gridWidth; x++){
-			for(int y = 0; y < gridHeight; y++){
-				grid[x][y] = getAverageColor(image, x, y, gridSize, gridSize);
-			}
-		}
+        for (int x = 0; x < gridWidth; x++) {
+            for (int y = 0; y < gridHeight; y++) {
+                grid[x][y] = getAverageColor(image, x * gridSize, y * gridSize, gridSize);
 
-		domain.setTemplate(new Template(grid));
-	}
+            }
+        }
 
-	private static Color getAverageColor(BufferedImage image, int startX, int startY, int cellWidth, int cellHeight) {
-		int endX = Math.min(startX + cellWidth, image.getWidth());
-		int endY = Math.min(startY + cellHeight, image.getHeight());
-		long sumRed = 0, sumGreen = 0, sumBlue = 0;
-		int count = 0;
+        switch (profile.getRotation()) {
+            case 270:
+                grid = rotate90(grid);
+            case 180:
+                grid = rotate90(grid);
+            case 90:
+                grid = rotate90(grid);
+                break;
+        }
 
-		for (int y = startY; y < endY; y++) {
-			for (int x = startX; x < endX; x++) {
-				Color color = new Color(image.getRGB(x, y));
-				sumRed += color.getRed();
-				sumGreen += color.getGreen();
-				sumBlue += color.getBlue();
-				count++;
-			}
-		}
+        domain.setTemplate(new Template(grid));
+    }
 
-		int avgRed = (int) (sumRed / count);
-		int avgGreen = (int) (sumGreen / count);
-		int avgBlue = (int) (sumBlue / count);
+    private static Color getAverageColor(BufferedImage image, int startX, int startY, int cellSize) {
 
-		return ColorMatcher.findClosestColor(new Color(avgRed, avgGreen, avgBlue));
-	}
+        int endX = Math.min(startX + cellSize, image.getWidth());
+        int endY = Math.min(startY + cellSize, image.getHeight());
+        long sumRed = 0, sumGreen = 0, sumBlue = 0, sumAlpha = 0;
+        int count = 0;
 
-	private static BufferedImage rotateImage(BufferedImage originalImage, double angle) {
-		int width = originalImage.getWidth();
-		int height = originalImage.getHeight();
+        for (int y = startY; y < endY; y++) {
+            for (int x = startX; x < endX; x++) {
+                Color color = new Color(image.getRGB(x, y));
+                sumRed += color.getRed();
+                sumGreen += color.getGreen();
+                sumBlue += color.getBlue();
+                sumAlpha += color.getAlpha();
+                count++;
+            }
+        }
 
-		// Erstellen eines neuen Bildes mit vertauschten Breiten- und Höhenwerten
-		BufferedImage rotatedImage = new BufferedImage(width ,height, originalImage.getType());
+        int avgRed = (int) (sumRed / count);
+        int avgGreen = (int) (sumGreen / count);
+        int avgBlue = (int) (sumBlue / count);
+        int avgAlpha = (int) (sumAlpha / count);
 
-		// AffineTransform zum Rotieren des Bildes
-		AffineTransform transform = new AffineTransform();
-		transform.translate(width / 2.0, height / 2.0); // Zentrieren
-		transform.rotate(Math.toRadians(angle)); // Rotieren
-		transform.translate(-height / 2.0, -width / 2.0); // Verschiebung zurück
+        return ColorMatcher.findClosestColor(new Color(avgRed, avgGreen, avgBlue, avgAlpha));
+    }
 
-		// Rotiertes Bild zeichnen
-		Graphics2D g2d = rotatedImage.createGraphics();
-		g2d.setTransform(transform);
-		g2d.drawImage(originalImage, 0, 0, null);
-		g2d.dispose();
+    private static Color[][] rotate90(Color[][] grid) {
+        int rows = grid.length;
+        int cols = grid[0].length;
+        Color[][] rotatedGrid = new Color[cols][rows];
 
-		return rotatedImage;
-	}
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                rotatedGrid[cols - 1 - c][r] = grid[r][c];
+            }
+        }
 
-	private static int mmToPixels(double mm) {
-		double inches = mm / 25.4;
-		return (int) Math.round(inches * 600);
-	}
+        return rotatedGrid;
+    }
 
-	private static BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
-		int originalWidth = originalImage.getWidth();
-		int originalHeight = originalImage.getHeight();
+    public static BufferedImage scaleToFitAspectRatio(BufferedImage originalImage, int targetWidth, int targetHeight) {
+        int imageWidth = originalImage.getWidth();
+        int imageHeight = originalImage.getHeight();
 
-		// Berechnung des Skalierungsverhältnisses
-		double widthRatio = (double) targetWidth / originalWidth;
-		double heightRatio = (double) targetHeight / originalHeight;
-		double scaleFactor = Math.min(widthRatio, heightRatio);
+        // Berechne das neue Seitenverhältnis
+        double aspectRatio = (double) targetWidth / targetHeight;
 
-		// Berechnung der neuen Dimensionen
-		int newWidth = (int) (originalWidth * scaleFactor);
-		int newHeight = (int) (originalHeight * scaleFactor);
+        // Berechne die neuen Dimensionen
+        double scalingFactor = Math.min((double) targetWidth / imageWidth, (double) targetHeight / imageHeight);
+        int newWidth = (int) (imageWidth * scalingFactor);
+        int newHeight = (int) (imageHeight * scalingFactor);
 
-		// Erstellen des neuen skalierten Bildes
-		BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, originalImage.getType());
-		Graphics2D g2d = resizedImage.createGraphics();
-		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		g2d.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
-		g2d.dispose();
+        // Erzeuge ein neues Bild mit den neuen Dimensionen
+        BufferedImage scaledImage = new BufferedImage(newWidth, newHeight, originalImage.getType());
 
-		return resizedImage;
-	}
+        // Zeichne das skalierte Bild
+        Graphics2D g2d = scaledImage.createGraphics();
+        AffineTransform at = AffineTransform.getScaleInstance(scalingFactor, scalingFactor);
+        g2d.drawRenderedImage(originalImage, at);
+        g2d.dispose();
 
-	@Override
-	public void update(State currentState) {
-		if (currentState.isSubStateOf(S.PROFILE_UPDATE) ||
-			currentState.isSubStateOf(S.IMAGE_LOADED)){
-			this.createTemplate(domain.getProfile(), domain.getImage());
-		}
-	}
+        return scaledImage;
+    }
+
+    @Override
+    public void update(State currentState) {
+        if (currentState.isSubStateOf(S.IMAGE_LOADED) ||
+                currentState.isSubStateOf(S.PROFILE_UPDATED)) {
+            this.createTemplate();
+        }
+    }
 }

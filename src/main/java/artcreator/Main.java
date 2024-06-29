@@ -1,7 +1,6 @@
 package artcreator;
 
 import artcreator.gui.CreatorFrame;
-import artcreator.gui.CreatorFrameOLD;
 
 import javax.swing.*;
 

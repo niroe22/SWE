@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
 public class DomainFacade implements DomainFactory, Domain {
 
     private DomainImpl domain = new DomainImpl();
-    private StateMachine stateMachine;
+    private StateMachine stateMachine =  StateMachineFactory.FACTORY.stateMachine();
 
     @Override
     public synchronized Domain domain() {
