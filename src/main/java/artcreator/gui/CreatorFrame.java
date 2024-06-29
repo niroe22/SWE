@@ -18,7 +18,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -199,7 +198,7 @@ public class CreatorFrame extends JFrame implements Observer {
         form.setContentPane(form.creatorJFrame);
         form.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         form.setSize(1000, 800);
-//        form.setResizable(false);
+        form.setTitle("Pinanalizer");
         form.materialListPanel.setVisible(false);
         form.setVisible(true);
 
@@ -229,7 +228,6 @@ public class CreatorFrame extends JFrame implements Observer {
     }
 
     public void update(State newState) {
-//            System.out.printf("%s - %s - new State: %s \n", LocalDateTime.now(), this.getClass().getName(), newState);
         boolean canChangeProfile = !newState.isSubStateOf(S.NO_IMAGE_LOADED);
         markDiameterSlider.setEnabled(canChangeProfile);
         granularitySlider.setEnabled(canChangeProfile);

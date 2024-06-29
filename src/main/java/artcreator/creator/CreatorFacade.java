@@ -46,12 +46,4 @@ public class CreatorFacade implements CreatorFactory, Creator {
 		}
 	}
 
-	public synchronized void createTemplate(){
-		if (this.stateMachine.getState().isSubStateOf(S.IMAGE_LOADED) ||
-				this.stateMachine.getState().isSubStateOf(S.TEMPLATE_CREATED) ||
-				this.stateMachine.getState().isSubStateOf(S.PROFILE_UPDATED)){
-			creator.createTemplate();
-		}
-	}
-
 }

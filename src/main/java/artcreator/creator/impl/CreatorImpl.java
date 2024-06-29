@@ -42,11 +42,6 @@ public class CreatorImpl implements Observer {
     public void createTemplate() {
         Profile profile = domain.getProfile();
         BufferedImage image=domain.getImage();
-//        if(profile.getRotation() == 90 || profile.getRotation() == 270) {
-//            image = scaleToFitAspectRatio(domain.getImage(), profile.getLength(), profile.getWidth());
-//        } else {
-//            image = scaleToFitAspectRatio(domain.getImage(), profile.getWidth(), profile.getLength());
-//        }
 
         int gridSize = (int) ((double) Math.min(image.getWidth(), image.getHeight()) * (double) profile.getGranularity() / (double) Math.min(profile.getWidth(), profile.getLength()));
         int gridWidth = image.getWidth() / gridSize;

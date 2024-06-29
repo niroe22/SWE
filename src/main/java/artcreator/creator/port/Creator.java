@@ -10,6 +10,5 @@ public interface Creator {
 
 	void updateProfile(Profile profile);
 
-	void createTemplate();
 }
 
