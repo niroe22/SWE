@@ -314,15 +314,15 @@ public class CreatorFrame extends JFrame implements Observer {
                     int width = (int) ((double) profile.getMarkDiameter() * ratio);
                     int height = (int) ((double) profile.getMarkDiameter() * ratio);
 
-//                    if (xPos >= panelOffsetX  && xPos + width <= panelOffsetX + ratioPanel[0] &&
-//                            yPos >= panelOffsetY && yPos + height <= panelOffsetY + ratioPanel[1]) {
+                    if (xPos >= panelOffsetX  && xPos + width <= panelOffsetX + ratioPanel[0] &&
+                            yPos >= panelOffsetY && yPos + height <= panelOffsetY + ratioPanel[1]) {
                         g.setColor(grid[x][y]);
                         g.fillOval(xPos, yPos, width, height);
                         g.setColor(Color.BLACK);
                         if (borderCheckBox.isSelected()) {
                             g.drawOval(xPos, yPos, width - 1, height - 1);
                         }
-//                    }
+                    }
                 }
             }
 
